@@ -1,4 +1,7 @@
 class CreditFooter extends HTMLElement {
+  static get observedAttributes() {
+    return ['button-color'];
+  }
   static {
     customElements.define('credit-footer', CreditFooter);
   }
@@ -30,12 +33,20 @@ class CreditFooter extends HTMLElement {
     this.render();
   }
 
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'button-color' && this.shadowRoot) {
+      const btn = this.shadowRoot.querySelector('.toggle-btn');
+      if (btn) btn.style.color = newValue || 'black';
+    }
+  }
+
   toggle() {
     this.opened = !this.opened;
     const footer = this.shadowRoot.querySelector('.footer');
     const sector = this.shadowRoot.querySelector('.sector');
 
-    footer.classList.toggle('open', this.opened);
+    // 同步 host 的 .open 状态，便于 CSS 控制 toggle-btn 的 filter
+    this.classList.toggle('open', this.opened);
     if (this.opened) {
       setTimeout(() => sector.classList.add('open'), 400);
     } else {
@@ -118,7 +129,7 @@ class CreditFooter extends HTMLElement {
           display: flex;
         }
 
-        .footer.open {
+        :host(.open) .footer {
           height: 100vh;
           transform: scaleY(1);
         }
@@ -129,14 +140,14 @@ class CreditFooter extends HTMLElement {
           bottom: 2rem;
           left: 50%;
           translate: -50%;
-          color: whitesmoke;
+          color: var(--btn-color, black);
           border: none;
           cursor: pointer;
           background: transparent;
           z-index: 10000;
         }
 
-        .toggle-btn svg {
+        .toggle-btn {
           mix-blend-mode: difference;
         }
 
@@ -147,12 +158,10 @@ class CreditFooter extends HTMLElement {
           translate: 170% 0;
           display: flex;
           justify-content: center;
-          align-items: center;
-          gap: 24px;
-          opacity: 0;
-          transition: opacity 0.4s ease 0.4s;
-          color: black;
-          text-decoration: underline;
+        }
+
+        :host(.open) .toggle-btn {
+          filter: invert(1);
         }
 
         .footer.open .links {
@@ -253,6 +262,10 @@ class CreditFooter extends HTMLElement {
       </div>
     `;
 
-    this.shadowRoot.querySelector('.toggle-btn').onclick = () => this.toggle();
+    const btn = this.shadowRoot.querySelector('.toggle-btn');
+    btn.onclick = () => this.toggle();
+    // 初始化按钮颜色
+    const btnColor = this.getAttribute('button-color');
+    if (btnColor) btn.style.color = btnColor;
   }
 }
