@@ -42,10 +42,8 @@ class CreditFooter extends HTMLElement {
 
   toggle() {
     this.opened = !this.opened;
-    const footer = this.shadowRoot.querySelector('.footer');
     const sector = this.shadowRoot.querySelector('.sector');
 
-    // 同步 host 的 .open 状态，便于 CSS 控制 toggle-btn 的 filter
     this.classList.toggle('open', this.opened);
     if (this.opened) {
       setTimeout(() => sector.classList.add('open'), 400);
@@ -60,6 +58,8 @@ class CreditFooter extends HTMLElement {
 
     this.shadowRoot.innerHTML = html`
       <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
         :host {
           position: fixed;
           bottom: 0;
@@ -67,7 +67,6 @@ class CreditFooter extends HTMLElement {
           width: 100%;
           display: block;
           z-index: 9999;
-          font-family: sans-serif;
           --half-sector-angle: 64deg;
           --sector-radius: 200px;
         }
@@ -147,10 +146,12 @@ class CreditFooter extends HTMLElement {
           cursor: pointer;
           background: transparent;
           z-index: 10000;
+          mix-blend-mode: difference;
+          transition: all 0.15s ease;
         }
 
-        .toggle-btn {
-          mix-blend-mode: difference;
+        .toggle-btn:active {
+          transform: scale(0.95);
         }
 
         .links {
@@ -170,15 +171,8 @@ class CreditFooter extends HTMLElement {
           opacity: 1;
         }
 
-        .links a {
-          color: white;
-          font-size: 1.5rem;
-          text-decoration: none;
-          transition: transform 0.3s;
-        }
-
-        .links a:hover {
-          transform: scale(1.2);
+        a:hover {
+          transform: scale(1.15);
         }
 
         .sector-link {
@@ -188,16 +182,28 @@ class CreditFooter extends HTMLElement {
           top: 50%;
           transform: translate(0, -50%);
           transform-origin: 1rem center;
-          color: #333;
+          color: #adcbb6;
           padding: 0;
-          font-size: 12px;
+          font-size: 0.8rem;
           text-decoration: none;
-          font-size: 1rem;
-          border: solid 1px red;
+          font-family: sans-serif;
+          filter: brightness(1.2);
+          letter-spacing: 0.05em;
+          position: absolute;
         }
 
-        .sector-link:hover {
-          text-decoration: underline;
+        .sector-link::after {
+          content: '';
+          display: block;
+          height: 1.2px;
+          width: 0;
+          background: currentColor;
+          transition: width 0.3s cubic-bezier(.4,0,.2,1);
+          margin-top: 2px;
+        }
+
+        .sector-link:hover::after {
+          width: 100%;
         }
       </style>
 
@@ -277,9 +283,9 @@ class CreditFooter extends HTMLElement {
       </button>
       <div class="footer">
         <div class="sector">
-          <a class="sector-link" href="#" data-angle="0" data-radius="200">Link 1</a>
-          <a class="sector-link" href="#" data-angle="64" data-radius="120">Link 2</a>
-          <a class="sector-link" href="#" data-angle="128" data-radius="120">Link 3</a>
+          <a class="sector-link" href="#" data-angle="1.2" data-radius="180">Github</a>
+          <a class="sector-link" href="#" data-angle="64" data-radius="140">X(Twitter)</a>
+          <a class="sector-link" href="#" data-angle="127" data-radius="140">CodePen</a>
         </div>
       </div>
     `;
