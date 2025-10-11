@@ -283,9 +283,9 @@ class CreditFooter extends HTMLElement {
       </button>
       <div class="footer">
         <div class="sector">
-          <a class="sector-link" href="#" data-angle="1.2" data-radius="180">Github</a>
-          <a class="sector-link" href="#" data-angle="64" data-radius="140">X(Twitter)</a>
-          <a class="sector-link" href="#" data-angle="127" data-radius="140">CodePen</a>
+          <a class="sector-link" href="https://github.com/JeromeJoh" target="_blank" rel="noopener" data-angle="1.2" data-radius="180">Github</a>
+          <a class="sector-link" href="#" target="_blank" data-angle="64" data-radius="140">X(Twitter)</a>
+          <a class="sector-link" href="https://codepen.io/JeromeJoh" target="_blank" data-angle="127" data-radius="140">CodePen</a>
         </div>
       </div>
     `;
