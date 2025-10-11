@@ -55,7 +55,10 @@ class CreditFooter extends HTMLElement {
   }
 
   render() {
-    this.shadowRoot.innerHTML = `
+    const html = (strings, ...values) =>
+      strings.reduce((acc, str, i) => acc + str + (values[i] ?? ''), '');
+
+    this.shadowRoot.innerHTML = html`
       <style>
         :host {
           position: fixed;
@@ -65,12 +68,14 @@ class CreditFooter extends HTMLElement {
           display: block;
           z-index: 9999;
           font-family: sans-serif;
+          --half-sector-angle: 64deg;
+          --sector-radius: 200px;
         }
 
         .sector {
           position: relative;
           margin: auto;
-          width: 400px;
+          width: calc(var(--sector-radius) * 2);
           aspect-ratio: 1;
           translate: 0 15%;
           background: radial-gradient(circle at 50% 50%,
@@ -81,19 +86,16 @@ class CreditFooter extends HTMLElement {
               #b4b1c6 60%,
               #b4b1c6 100%);
           mask: conic-gradient(#ff4e50 0deg var(--angle), transparent var(--angle) 360deg);
-
-          /* clip-path: polygon(0% 100%, 50% 0%, 100% 100%); */
-          rotate: -64deg;
+          rotate: calc(var(--half-sector-angle) * -1);
           border-radius: 50%;
           opacity: 0;
-          /* animation: reveal 0.3s ease-out infinite alternate; */
           filter: url(#noiseTexture);
         }
 
         .sector.links {
           position: absolute;
           left: 0;
-          top:0;
+          top: 0;
           transition: opacity 0.4s ease 0.4s;
         }
 
@@ -104,7 +106,7 @@ class CreditFooter extends HTMLElement {
           }
 
           to {
-            --angle: 128deg;
+            --angle: calc(var(--half-sector-angle) * 2);
             opacity: 1;
           }
         }
@@ -164,7 +166,7 @@ class CreditFooter extends HTMLElement {
           filter: invert(1);
         }
 
-        .footer.open .links {
+        :host(.open) .footer .links {
           opacity: 1;
         }
 
@@ -177,6 +179,25 @@ class CreditFooter extends HTMLElement {
 
         .links a:hover {
           transform: scale(1.2);
+        }
+
+        .sector-link {
+          display: block;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(0, -50%);
+          transform-origin: 1rem center;
+          color: #333;
+          padding: 0;
+          font-size: 12px;
+          text-decoration: none;
+          font-size: 1rem;
+          border: solid 1px red;
+        }
+
+        .sector-link:hover {
+          text-decoration: underline;
         }
       </style>
 
@@ -255,10 +276,11 @@ class CreditFooter extends HTMLElement {
         </svg>
       </button>
       <div class="footer">
-      <div class="sector">
-        <div class="links">Jerome Joh</div>
-      </div>
-      <div class="fan"></div>
+        <div class="sector">
+          <a class="sector-link" href="#" data-angle="0" data-radius="200">Link 1</a>
+          <a class="sector-link" href="#" data-angle="64" data-radius="120">Link 2</a>
+          <a class="sector-link" href="#" data-angle="128" data-radius="120">Link 3</a>
+        </div>
       </div>
     `;
 
@@ -267,5 +289,20 @@ class CreditFooter extends HTMLElement {
     // 初始化按钮颜色
     const btnColor = this.getAttribute('button-color');
     if (btnColor) btn.style.color = btnColor;
+
+    const links = this.shadowRoot.querySelectorAll('.sector-link');
+    links.forEach(link => {
+      const angle = parseFloat(link.getAttribute('data-angle') || '0');
+      const radius = parseFloat(link.getAttribute('data-radius') || '120');
+      link.style.transform = `translate(${radius}px, -50%)`;
+      link.style.rotate = `${angle - 90}deg`;
+      if (angle < 64) {
+        link.style.transform = `translate(${radius}px, -50%) rotate(180deg)`;
+      }
+
+      if (angle > 10 && angle < 118) {
+        link.style.transformOrigin = 'left center';
+      }
+    });
   }
 }
