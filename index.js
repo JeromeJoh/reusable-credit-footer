@@ -303,7 +303,7 @@ class CreditFooter extends HTMLElement {
       link.style.transform = `translate(${radius}px, -50%)`;
       link.style.rotate = `${angle - 90}deg`;
       if (angle < 64) {
-        link.style.transform = `translate(${radius}px, -50%) rotate(180deg)`;
+        link.style.transform = `translate(${radius}px, -35%) rotate(180deg)`;
       }
 
       if (angle > 10 && angle < 118) {
