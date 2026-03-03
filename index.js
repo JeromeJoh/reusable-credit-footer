@@ -61,10 +61,8 @@ class CreditFooter extends HTMLElement {
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
         :host {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          width: 100%;
+          position: relative;
+          width: fit-content;
           display: block;
           z-index: 9999;
           --half-sector-angle: 64deg;
@@ -136,11 +134,8 @@ class CreditFooter extends HTMLElement {
         }
 
         .toggle-btn {
+          position: relative;
           max-width: 160px;
-          position: fixed;
-          bottom: 2rem;
-          left: 50%;
-          translate: -50%;
           color: var(--btn-color, black);
           border: none;
           cursor: pointer;
@@ -207,7 +202,7 @@ class CreditFooter extends HTMLElement {
         }
       </style>
 
-      <svg viewBox="0 0 602.29 163.75">
+      <svg viewBox="0 0 602.29 163.75" display="none">
         <defs>
           <style>
             #author path,
