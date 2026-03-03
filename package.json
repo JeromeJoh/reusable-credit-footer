@@ -1,6 +1,6 @@
 {
   "name": "@jeromejoh/credit-footer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A customizable web component that provides an animated footer with social media links. Perfect for demo projects to showcase author information.",
   "type": "module",
   "exports": {
