@@ -31,6 +31,7 @@ class CreditFooter extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    this.log();
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -305,5 +306,19 @@ class CreditFooter extends HTMLElement {
         link.style.transformOrigin = 'left center';
       }
     });
+  }
+
+  log() {
+    const base = 'font-family:sans-serif;color: black;';
+    console.log(
+      "%cSite %cBy %cJ%cerome %cJ%coh %c[ https://jeromejoh.com ]",
+      base,
+      base,
+      base + " font-weight: bold;",
+      base,
+      base + " font-weight: bold;",
+      base,
+      base + " color: #decade;"
+    );
   }
 }
