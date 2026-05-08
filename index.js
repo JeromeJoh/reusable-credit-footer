@@ -67,7 +67,7 @@ class CreditFooter extends HTMLElement {
           display: block;
           z-index: 9999;
           --half-sector-angle: 64deg;
-          --sector-radius: 200px;
+          --sector-radius: clamp(200px, 24vw, 400px);
         }
 
         .sector {
@@ -180,12 +180,11 @@ class CreditFooter extends HTMLElement {
           transform-origin: 1rem center;
           color: #adcbb6;
           padding: 0;
-          font-size: 0.8rem;
+          font-size: 1rem;
           text-decoration: none;
           font-family: sans-serif;
           filter: brightness(1.2);
           letter-spacing: 0.05em;
-          position: absolute;
         }
 
         .sector-link::after {
@@ -279,9 +278,9 @@ class CreditFooter extends HTMLElement {
       </button>
       <div class="footer">
         <div class="sector">
-          <a class="sector-link" href="https://github.com/JeromeJoh" target="_blank" rel="noopener" data-angle="1.2" data-radius="180">Github</a>
-          <a class="sector-link" href="#" target="_blank" data-angle="64" data-radius="140">X(Twitter)</a>
-          <a class="sector-link" href="https://codepen.io/JeromeJoh" target="_blank" data-angle="127" data-radius="140">CodePen</a>
+          <a class="sector-link" href="https://github.com/JeromeJoh" target="_blank" rel="noopener" data-angle="1.2" data-radius="0.9">Github</a>
+          <a class="sector-link" href="#" target="_blank" data-angle="64" data-radius="0.7">X(Twitter)</a>
+          <a class="sector-link" href="https://codepen.io/JeromeJoh" target="_blank" data-angle="127" data-radius="0.7">CodePen</a>
         </div>
       </div>
     `;
@@ -293,9 +292,20 @@ class CreditFooter extends HTMLElement {
     if (btnColor) btn.style.color = btnColor;
 
     const links = this.shadowRoot.querySelectorAll('.sector-link');
+    const sector = this.shadowRoot.querySelector('.sector');
+    const baseDistancePx = parseFloat(
+      getComputedStyle(sector).getPropertyValue('width')
+    ) / 2;
+
+    console.log('Base distance in px:', baseDistancePx);
+
     links.forEach(link => {
       const angle = parseFloat(link.getAttribute('data-angle') || '0');
-      const radius = parseFloat(link.getAttribute('data-radius') || '120');
+      // const radius = parseFloat(link.getAttribute('data-radius') || '120');
+      const baseDistance = parseFloat(baseDistancePx);
+      const multiplier = parseFloat(link.getAttribute('data-radius') || '1');
+      const radius = baseDistance * multiplier;
+
       link.style.transform = `translate(${radius}px, -50%)`;
       link.style.rotate = `${angle - 90}deg`;
       if (angle < 64) {
