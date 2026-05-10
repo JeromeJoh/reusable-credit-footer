@@ -32,6 +32,11 @@ class CreditFooter extends HTMLElement {
   connectedCallback() {
     this.render();
     this.log();
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -39,6 +44,37 @@ class CreditFooter extends HTMLElement {
       const btn = this.shadowRoot.querySelector('.toggle-btn');
       if (btn) btn.style.color = newValue || 'black';
     }
+  }
+
+  handleResize() {
+    this.updateLinkPositions();
+  }
+
+  updateLinkPositions() {
+    const links = this.shadowRoot.querySelectorAll('.sector-link');
+    const sector = this.shadowRoot.querySelector('.sector');
+    if (!sector) return;
+
+    const baseDistancePx = parseFloat(
+      getComputedStyle(sector).getPropertyValue('width')
+    ) / 2;
+
+    links.forEach(link => {
+      const angle = parseFloat(link.getAttribute('data-angle') || '0');
+      const baseDistance = parseFloat(baseDistancePx);
+      const multiplier = parseFloat(link.getAttribute('data-radius') || '1');
+      const radius = baseDistance * multiplier;
+
+      link.style.transform = `translate(${radius}px, -50%)`;
+      link.style.rotate = `${angle - 90}deg`;
+      if (angle < 64) {
+        link.style.transform = `translate(${radius}px, -35%) rotate(180deg)`;
+      }
+
+      if (angle > 10 && angle < 118) {
+        link.style.transformOrigin = 'left center';
+      }
+    });
   }
 
   toggle() {
@@ -182,9 +218,15 @@ class CreditFooter extends HTMLElement {
           padding: 0;
           font-size: 1rem;
           text-decoration: none;
-          font-family: sans-serif;
+          font-family: 'Josefin Sans', sans-serif;
           filter: brightness(1.2);
           letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 833px) {
+          .sector-link {
+            font-size: 0.8rem;
+          }
         }
 
         .sector-link::after {
@@ -291,31 +333,7 @@ class CreditFooter extends HTMLElement {
     const btnColor = this.getAttribute('button-color');
     if (btnColor) btn.style.color = btnColor;
 
-    const links = this.shadowRoot.querySelectorAll('.sector-link');
-    const sector = this.shadowRoot.querySelector('.sector');
-    const baseDistancePx = parseFloat(
-      getComputedStyle(sector).getPropertyValue('width')
-    ) / 2;
-
-    console.log('Base distance in px:', baseDistancePx);
-
-    links.forEach(link => {
-      const angle = parseFloat(link.getAttribute('data-angle') || '0');
-      // const radius = parseFloat(link.getAttribute('data-radius') || '120');
-      const baseDistance = parseFloat(baseDistancePx);
-      const multiplier = parseFloat(link.getAttribute('data-radius') || '1');
-      const radius = baseDistance * multiplier;
-
-      link.style.transform = `translate(${radius}px, -50%)`;
-      link.style.rotate = `${angle - 90}deg`;
-      if (angle < 64) {
-        link.style.transform = `translate(${radius}px, -35%) rotate(180deg)`;
-      }
-
-      if (angle > 10 && angle < 118) {
-        link.style.transformOrigin = 'left center';
-      }
-    });
+    this.updateLinkPositions();
   }
 
   log() {
