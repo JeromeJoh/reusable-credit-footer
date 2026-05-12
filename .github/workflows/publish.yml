@@ -2,8 +2,8 @@ name: Publish to NPM
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main # 改为监听main分支push
 
 jobs:
   publish:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取完整历史以检查变更
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -20,12 +22,27 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build (if needed)
         run: npm run build --if-present
 
-      - name: Publish to NPM
-        run: npm publish --access public
+      - name: Check for changes
+        id: check_changes
+        run: |
+          # 检查index.js是否有变更（核心文件）
+          if git diff --quiet HEAD~1 -- index.js; then
+            echo "No changes to publish"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected, publishing"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump version and publish
+        if: steps.check_changes.outputs.should_publish == 'true'
+        run: |
+          npm version patch --no-git-tag-version  # 自动递增patch版本，不创建git tag
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
