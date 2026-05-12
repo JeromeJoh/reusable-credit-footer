@@ -349,4 +349,5 @@ class CreditFooter extends HTMLElement {
       base + " color: #decade;"
     );
   }
-}
+}/ /   M i n o r   f i x  
+ 
