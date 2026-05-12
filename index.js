@@ -30,8 +30,8 @@ class CreditFooter extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render();
     this.log();
+    this.render();
     window.addEventListener('resize', this.handleResize.bind(this));
   }
 
